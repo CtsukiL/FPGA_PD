@@ -1,0 +1,101 @@
+//============================================================================
+// pendulum_fpga.cst —— 引脚约束（逻辑派 FPGA-G1 / GW2A-LV18PG256C8/I7）
+// 引脚取自官方《立创逻辑派FPGA_G1_IO.cst》，全部落在已验证 3.3V 的 Bank0/1
+//   H5/H6 排针（网表位号 H5/H6，丝印可能标 J5/J6，实物请核对 1 号针方向）
+//     H5-1  enc_a      K16
+//     H5-2  enc_b      J15
+//     H6-7  motor_pwm  G15
+//     H6-8  motor_in1  G14
+//     H6-9  motor_in2  G16
+//   ADC 模块（3PA1030，模块接线固定不可调）：
+//     adc_d[0..9] = R14 T15 T13 T11 P12 P11 N10 M11 E10 D10
+//     adc_otr = C9   adc_clk = C11   （模块座 a11 空置）
+//     adc_oe(A9) 已不用：新 AD 板上 OE 直接接地
+//   板载：sys_clk T7 / led[0..3] R9 R7 N6 P7
+// OLED（SSD1306，I2C）：oled_scl = J14(H5-3) / oled_sda = J16(H5-4)
+//   外接按键（H6 排针连续 4 针）：key[0]=N14(H6-36) key[1]=N16(H6-35)
+//                                key[2]=R16(H6-34) key[3]=P15(H6-33)
+//         uart_tx F12 / uart_rx F13
+//   注意：板载 LED 的另外两个脚 C10、T10 是 SSPI 专用引脚（占用后无法再用
+//         外部 Flash/MSPI 配置启动），本工程不使用。
+//============================================================================
+
+//---------------------------- 系统时钟 ----------------------------
+IO_LOC "sys_clk" T7;
+IO_PORT "sys_clk" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+
+//---------------------------- 外接按键（4 个，低有效）----------------------------
+// 接法：按键一端接 IO、另一端接 GND；IO 内部上拉，按下为低
+// 引脚取自官方模组例程（spi-tft / TCRT5000 / PT8211）用过的排针 IO，与其它信号无冲突
+IO_LOC "key[0]" N14;    // K1 启停
+IO_PORT "key[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "key[1]" N16;    // K2 目标 +90 度
+IO_PORT "key[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "key[2]" R16;    // K3 目标 -90 度
+IO_PORT "key[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "key[3]" P15;    // K4 标定平衡点（H6-33；原电机 IN2 已挪到 G16）
+IO_PORT "key[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+
+//---------------------------- 板载 LED（低电平点亮，只用 4 个）----------------------------
+IO_LOC "led[0]" R9;
+IO_PORT "led[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "led[1]" R7;
+IO_PORT "led[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "led[2]" N6;
+IO_PORT "led[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "led[3]" P7;
+IO_PORT "led[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+
+//---------------------------- 串口（板载 USB 串口）----------------------------
+IO_LOC "uart_tx" F12;
+IO_PORT "uart_tx" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+// IO_LOC "uart_rx" F13;                     // 预留不接（与 top.v 同步注释）
+// IO_PORT "uart_rx" IO_TYPE=LVCMOS33 PULL_MODE=NONE BANK_VCCIO=3.3;
+
+//---------------------------- 3PA1030 并行 ADC（模块实际接线，固定不可调）----------------------------
+// 模块接线：5V-5V、GND-GND；数据与控制信号一一对应（模块座 a11 空置）
+IO_LOC "adc_d[0]" R14;
+IO_PORT "adc_d[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[1]" T15;
+IO_PORT "adc_d[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[2]" T13;
+IO_PORT "adc_d[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[3]" T11;
+IO_PORT "adc_d[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[4]" P12;
+IO_PORT "adc_d[4]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[5]" P11;
+IO_PORT "adc_d[5]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[6]" N10;
+IO_PORT "adc_d[6]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[7]" M11;
+IO_PORT "adc_d[7]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[8]" E10;
+IO_PORT "adc_d[8]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_d[9]" D10;
+IO_PORT "adc_d[9]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+
+IO_LOC "adc_otr" C9;    // 超量程指示（输入）
+IO_PORT "adc_otr" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "adc_clk" C11;   // 采样时钟输出
+IO_PORT "adc_clk" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+
+//---------------------------- OLED（SSD1306，4 针 I2C，模块自带 SDA 上拉）----------------------------
+IO_LOC "oled_scl" J14;      // SCL：推挽输出
+IO_PORT "oled_scl" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "oled_sda" J16;      // SDA：开漏（写 0 拉低 / 写 1 高阻），内部上拉做保险
+IO_PORT "oled_sda" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+
+//---------------------------- 编码器（H5 排针）----------------------------
+IO_LOC "enc_a" K16;
+IO_PORT "enc_a" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "enc_b" J15;
+IO_PORT "enc_b" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+
+//---------------------------- 电机驱动 TB6612（H6 排针）----------------------------
+IO_LOC "motor_pwm" G15;    // H6-7
+IO_PORT "motor_pwm" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "motor_in1" G14;    // H6-8
+IO_PORT "motor_in1" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "motor_in2" G16;    // H6-9
+IO_PORT "motor_in2" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;

@@ -1,0 +1,25 @@
+# Gowin and ModelSim generated outputs
+impl/gwsynthesis/
+impl/temp/
+impl/pnr/*
+!impl/pnr/pendulum_fpga.fs
+sim/work/
+sim/work_chk/
+sim/work_oled/
+sim/*.log
+sim/transcript
+sim/vsim*
+sim/wlft*
+sim/*.mti
+sim/*.mpf
+sim/*.cr.mti
+sim/modelsim.ini
+
+# Python generated files
+__pycache__/
+doc/__pycache__/
+*.pyc
+
+# Local editor/project state
+*.gprj.user
+.DS_Store
