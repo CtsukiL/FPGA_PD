@@ -58,7 +58,16 @@ async function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function serialError(e){const msg=(e&&e.message||'').toLowerCase();return e&&e.name==='AbortError'||msg.includes('break received')||msg.includes('break signal')||msg.includes('device has been lost')}
 async function closeSerial(){if(reader){try{await reader.cancel()}catch(e){}try{reader.releaseLock()}catch(e){}reader=null}if(port){try{await port.close()}catch(e){}}}
 async function releaseReader(){if(reader){try{reader.releaseLock()}catch(e){}reader=null}}
-async function recoverPort(){await releaseReader();await sleep(300);if(!port)return;if(!port.readable){try{await port.close()}catch(e){}await sleep(200);await port.open({baudRate:115200,dataBits:8,stopBits:1,parity:'none',bufferSize:4096)}}}
+async function recoverPort(){
+  await releaseReader();
+  await sleep(300);
+  if(!port)return;
+  if(!port.readable){
+    try{await port.close()}catch(e){}
+    await sleep(200);
+    await port.open({baudRate:115200,dataBits:8,stopBits:1,parity:'none',bufferSize:4096});
+  }
+}
 async function connect(){if(!('serial' in navigator)){alert('当前浏览器不支持 Web Serial，请使用最新版 Chrome 或 Edge。');return}if(connecting)return;connecting=true;keep=true;try{if(!port){const ports=await navigator.serial.getPorts();port=ports[0]||await navigator.serial.requestPort()}let retry=0;while(keep){try{if(!port.readable)await port.open({baudRate:115200,dataBits:8,stopBits:1,parity:'none',bufferSize:4096});startAt=Date.now();$('status').textContent='已连接';$('dot').className='dot live';$('connect').textContent='断开串口';$('pause').disabled=false;$('clear').disabled=false;$('save').disabled=false;reader=port.readable.getReader();while(keep){const {value,done}=await reader.read();if(done)break;if(value)appendBytes(value)}if(!keep)break;throw new Error('read ended')}catch(e){if(!keep)break;retry=Math.min(retry+1,6);await recoverPort();$('status').textContent='串口恢复中';$('dot').className='dot warn';await sleep(Math.min(5000,500*retry))}}}catch(e){keep=false;await closeSerial();$('status').textContent='连接失败';$('dot').className='dot warn';const msg=(e.message||'').toLowerCase();const reason=msg.includes('in use')||msg.includes('busy')||msg.includes('access')?'该串口可能已被 VOFA+、串口助手或其他程序占用，请先关闭它们后重试。':'浏览器无法打开该串口。请确认 USB-TTL 驱动正常并选择正确 COM 口。错误：'+e.message;alert(reason)}finally{connecting=false;if(!keep){$('connect').textContent='连接串口';$('pause').disabled=true}}}
 $('connect').onclick=async()=>{if(keep){keep=false;await closeSerial();$('status').textContent='已断开';$('dot').className='dot';$('connect').textContent='连接串口';$('pause').disabled=true}else connect()};$('pause').onclick=()=>{paused=!paused;$('pause').textContent=paused?'继续':'暂停';$('hint').textContent=paused?'已暂停绘图，串口仍在接收。':'正在实时绘图。'};$('clear').onclick=()=>{history.length=0;good=bad=dropped=0;lastSeq=null;drawAll();$('frames').textContent='0';$('crcErrors').textContent='0';$('drops').textContent='0'};$('save').onclick=()=>{if(!history.length)return;const head=EXPORT_FIELDS.join(',');const body=history.map(f=>EXPORT_FIELDS.map(k=>k==='time_s'?f.time_ms/1000:f[k]).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([head+'\n'+body],{type:'text/csv'}));a.download='fpga_telemetry_'+new Date().toISOString().replace(/[:.]/g,'-')+'.csv';a.click();URL.revokeObjectURL(a.href)};window.onresize=drawAll;drawAll();
 // Re-select and fully release the port on every manual connection attempt.
