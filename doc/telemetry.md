@@ -37,3 +37,14 @@ Open `web/telemetry.html` in Chrome or Edge. The page uses Web Serial directly a
 `time_s, angle, location, pos_target, pos_set, bar_vel, target_vel, motor_cmd, angle_out, pos_out`
 
 The page parses the existing CRC-protected FPGA frame, so the FPGA does not need a floating-point UART formatter.
+
+## Browser compatibility fallback
+
+Some USB-UART drivers report every read as `BreakError` to Chrome Web Serial even though SSCOM receives the bytes correctly. Use the Python bridge in that case:
+
+```powershell
+python -m pip install pyserial
+python doc/telemetry_server.py COM3 --http 8001
+```
+
+Open `http://localhost:8001/telemetry.html?bridge=1`. The Python process owns the COM port and the browser only receives parsed frames over local SSE, so SSCOM must be closed while the bridge is running.

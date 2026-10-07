@@ -72,6 +72,14 @@ $('connect').onclick=async()=>{if(keep){keep=false;await closeSerial();$('status
 const connectLoop=connect;
 connect=async()=>{if(connecting)return;await closeSerial();port=null;return connectLoop()};
 $('connect').onclick=async()=>{if(keep){keep=false;await closeSerial();port=null;$('status').textContent='已断开';$('dot').className='dot';$('connect').textContent='连接串口';$('pause').disabled=true}else connect()};
+// Bridge mode is used with doc/telemetry_server.py when Web Serial reports
+// BreakError with a particular USB-UART driver.
+const bridgeMode=new URLSearchParams(location.search).has('bridge');
+let bridgeSource=null;
+function acceptTelemetry(f){if(!f)return;if(lastSeq!==null&&((f.seq-lastSeq)&0xffff)>1)dropped+=((f.seq-lastSeq)&0xffff)-1;lastSeq=f.seq;good++;if(!paused){history.push(f);const lim=Math.max(20,Math.min(2000,Number($('window').value)||300));while(history.length>lim)history.shift();render(f)}}
+function connectBridge(){if(bridgeSource)return;bridgeSource=new EventSource('/events');bridgeSource.onopen=()=>{$('status').textContent='桥接已连接';$('dot').className='dot live';$('connect').textContent='断开桥接';$('pause').disabled=false;$('clear').disabled=false;$('save').disabled=false};bridgeSource.onmessage=e=>{try{acceptTelemetry(JSON.parse(e.data))}catch(err){$('hint').textContent='桥接数据解析失败：'+err.message}};bridgeSource.onerror=()=>{$('status').textContent='桥接等待中';$('dot').className='dot warn'}}
+function disconnectBridge(){if(bridgeSource){bridgeSource.close();bridgeSource=null}$('status').textContent='已断开';$('dot').className='dot';$('connect').textContent='连接桥接';$('pause').disabled=true}
+if(bridgeMode){$('connect').onclick=()=>bridgeSource?disconnectBridge():connectBridge();$('connect').textContent='连接桥接';$('hint').textContent='Python 串口桥接模式：网页通过本地 SSE 接收数据。'}
 </script>
 </body>
 </html>
