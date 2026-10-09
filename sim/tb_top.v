@@ -1,4 +1,5 @@
 `timescale 1ns/1ps
+`include "src/pendulum_cfg.vh"   // 编码器 count/圈 与 RTL 共用同一个来源
 //============================================================================
 // tb_top.v —— 倒立摆 FPGA 工程闭环仿真平台（ModelSim）
 //
@@ -33,7 +34,7 @@ module tb_top;
     localparam real    CNT_DEG  = 10.0;               // 电位器每度对应的 ADC 码（±180° 全行程都有读数）
     localparam real    AMAX_DEG = 180.0;              // 摆杆机械行程 ±180 度（可真正垂到底）
     localparam real    AMAX_RAD = 180.0 * PI / 180.0;
-    localparam real    CNT_RAD  = 408.0 / (2.0 * PI); // 编码器：每弧度 64.9 count
+    localparam real    CNT_RAD  = `CFG_CNT_PER_REV / (2.0 * PI); // 编码器：每弧度 count（旧电机 408 -> 64.9）
 
     // ---- 物理参数（按实物估算）----
     //   摆杆 10cm / 旋转臂 10cm，均为 5~6mm 杆（各约 20g）
@@ -72,7 +73,6 @@ module tb_top;
     wire [3:0] led;
     wire       uart_tx;
     wire       adc_clk;
-    wire       adc_oe;
     wire       oled_scl;
     wire       oled_sda;
     wire       motor_pwm, motor_in1, motor_in2;
@@ -82,9 +82,7 @@ module tb_top;
         .key       (key),
         .led       (led),
         .uart_tx   (uart_tx),
-        .uart_rx   (1'b1),
         .adc_clk   (adc_clk),
-        .adc_oe    (adc_oe),
         .adc_d     (adc_d),
         .adc_otr   (adc_otr),
         .enc_a     (enc_a),

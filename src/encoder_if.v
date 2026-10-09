@@ -15,7 +15,7 @@ module encoder_if(
     input  wire               enc_a,     // 编码器 A 相
     input  wire               enc_b,     // 编码器 B 相
     input  wire               pos_clr,   // 单周期脉冲：把当前位置记为初始位置（K4 标定）
-    output reg  signed [31:0] pos        // 累计位置（count，1 圈 = 408 count）
+    output reg  signed [31:0] pos        // 累计位置（count，1 圈 = CFG_CNT_PER_REV，见 pendulum_cfg.vh）
 );
 
     //----------------- 两级触发器同步（消除亚稳态）-----------------

@@ -23,3 +23,6 @@ doc/__pycache__/
 # Local editor/project state
 *.gprj.user
 .DS_Store
+
+# 改文件前的本地备份（xxx.v.bak01 ...）
+*.bak*

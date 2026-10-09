@@ -28,7 +28,7 @@ module tb_states;
     reg        enc_b   = 1'b0;
     reg  [3:0] key     = 4'b1111;      // 4 个外接按键，低有效
     wire [3:0] led;
-    wire       uart_tx, adc_clk, adc_oe, oled_scl, motor_pwm, motor_in1, motor_in2;
+    wire       uart_tx, adc_clk, oled_scl, motor_pwm, motor_in1, motor_in2;
     wire       oled_sda;
 
     top u_top(
@@ -36,9 +36,7 @@ module tb_states;
         .key       (key),
         .led       (led),
         .uart_tx   (uart_tx),
-        .uart_rx   (1'b1),
         .adc_clk   (adc_clk),
-        .adc_oe    (adc_oe),
         .adc_d     (adc_d),
         .adc_otr   (adc_otr),
         .enc_a     (enc_a),

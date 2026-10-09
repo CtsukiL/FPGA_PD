@@ -12,11 +12,13 @@
 //   运算：Out = (KP*e + KD*(e-e_prev)) >>> 16，再饱和限幅 ±100，最后过输出死区
 // 说明：Ki 固定为 0（避免低频振荡），与 STM32 版一致
 //============================================================================
+`include "src/pendulum_cfg.vh"   // 位置环系数按 count/圈 自动折算（换电机只改那个文件）
+
 module pid_pos(
     input  wire               clk,          // 50MHz 系统时钟
     input  wire               rst_n,        // 低电平复位
     input  wire               calc_en,      // 50ms 计算脉冲
-    input  wire signed [31:0] target,       // 位置目标（count，1 圈 = 408）
+    input  wire signed [31:0] target,       // 位置目标（count，1 圈 = CFG_CNT_PER_REV，见 pendulum_cfg.vh）
     input  wire signed [31:0] location,     // 实测位置（count）
     input  wire               clr,          // 刷新（起摆入区：把上次误差置为当前误差，D 项首拍为 0）
     input  wire               active,       // 【2026-10-06】1 = 运动中（走轨迹 / 手动移动）：积分只在这时参与
@@ -24,18 +26,18 @@ module pid_pos(
 );
 
     //----------------- Q16 参数 ----------------
-    localparam signed [31:0] KP = 32'sd26214;   // 0.4  * 65536
-    localparam signed [31:0] KD = 32'sd262144;  // 4.0  * 65536
+    localparam signed [31:0] KP = `CFG_POS_KP_Q16;   // 0.4  * 65536（按 count/圈 折算，见 pendulum_cfg.vh）
+    localparam signed [31:0] KD = `CFG_POS_KD_Q16;   // 4.0  * 65536
 
     localparam signed [39:0] OUT_MAX  = 40'sd40;    // 【2026-10-06】100 -> 40：±100 允许摆杆被撑到 8 度去换横杆回中，运动结束后来回晃、恢复慢
     localparam signed [39:0] OUT_MIN  = -40'sd40;   // 【2026-10-06】-100 -> -40（同上）
-    localparam signed [39:0] DEADZONE = 40'sd1; // 【2026-10-06】3 -> 1：死区 3 对应误差 7.5 count，小修正被自己截掉 -> 静止态稳定慢（电机死区已降到 2，瓶颈转到这一环）
+    localparam signed [39:0] DEADZONE = `CFG_POS_DEADZONE; // 【2026-10-06】原 3 -> 1：死区 3 对应误差 7.5 count，小修正被自己截掉 -> 静止态稳定慢（电机死区已降到 2，瓶颈转到这一环）；换电机后按新 count/圈 自动折算
 
     //----------------- 积分项（2026-10-06 加回，只用在运动态）-----------------
     // 纯 PD 的固有毛病：要出力就必须有误差 -> 小误差没劲（恢复慢），攒够才动（步长大）。
     // 积分让小误差也能持续出力；`active` = 运动态才参与，静止态清零（静止行为仍是纯 PD）。
     // 泄漏 1/32（时间常数 32 拍 = 1.6s）：平衡点 = 32×跟踪误差，避免一路爬到限幅顶死。
-    localparam signed [31:0] KI    = 32'sd6554;   // 0.10 * 65536
+    localparam signed [31:0] KI    = `CFG_POS_KI_Q16;   // 0.10 * 65536
     localparam signed [31:0] I_MAX = 32'sd0;      // 【2026-10-06】48 -> 0：**本版关掉位置环积分**（代码保留，随时可开回）。
                                                   //   原因：位置环 + 角度环两个积分器 = 相位裕度不够 -> 低频摆，
                                                   //   表现就是长按"走一段、回移一段、反复"。恒定推力改由固定前馈 POS_FF 提供（不占相位）。

@@ -21,6 +21,8 @@
 //   2) 位置零点只由"标定键"设定并保持，起摆入区时不清编码器位置，
 //      所以平衡后横杆会回到标定那一刻的初始位置。
 //============================================================================
+`include "src/pendulum_cfg.vh"   // 与编码器分辨率(count/圈)有关的常数（换电机只改这个文件）
+
 module ctrl_fsm(
     input  wire               clk,
     input  wire               rst_n,
@@ -56,8 +58,8 @@ module ctrl_fsm(
     localparam signed [15:0] CENTER_RANGE = 16'sd500;   // 中心区间 ±500
     localparam signed [15:0] START_PWM    = 16'sd50;    // 起摆推力（2026-10-02 35→45→50）
     localparam [7:0]         START_TIME   = 8'd100;     // 起摆推力持续时间 100ms
-    localparam signed [31:0] POS_STEP     = 32'sd408;   // 一次 360 度 = 408 count（408 count/圈）
-    localparam signed [31:0] POS_LIMIT    = 32'sd4080;  // 位置目标限幅 ±10 圈
+    localparam signed [31:0] POS_STEP     = `CFG_POS_STEP;   // 一次 360 度 = 1 圈（数值见 pendulum_cfg.vh）
+    localparam signed [31:0] POS_LIMIT    = `CFG_POS_LIMIT;  // 位置目标限幅 ±10 圈
     localparam [11:0]        CENTER_INIT  = 12'd2400;   // 平衡点角度初值（0~4095 尺度）= 屏上 CT 600；上电默认值，按 K4 后会被实际标定值覆盖【2026-10-06 先设 2396(CT 599)，按用户要求取整到 600】
 
     //----------------- 轨迹发生器参数（2026-10-04，赛题拓展 2）-----------------
@@ -67,11 +69,11 @@ module ctrl_fsm(
     //   赛题拓展 1 "平滑地移动到指定方向并保持静止" 与拓展 3 "移动中摆杆始终直立"
     //   也随之改善：横杆是被"带着走"而不是被位置环猛追，摆杆倾角小。
     //   单位：vel 是 count/50ms，故 1 count/50ms = 20 count/s。
-    //   TRAJ_VMAX = 8  -> 最高速 160 count/s（约 0.4 圈/s）
-    //   加速度 = TRAJ_ASTEP / TRAJ_ACC_DIV / 50ms；DIV=1 -> 400 count/s^2，
-    //   加速到最高速要 8 拍 = 400ms。走 360 度(408 count) 全程约 2.9s。
-    localparam signed [31:0] TRAJ_VMAX  = 32'sd8;       // 最大速度（count/50ms）
-    localparam signed [31:0] TRAJ_ASTEP = 32'sd1;       // 每档速度增量（count/50ms）
+    //   最高速 = CFG_TRAJ_VMAX、加速度 = CFG_TRAJ_ASTEP / TRAJ_ACC_DIV，
+    //   两者都在 pendulum_cfg.vh 里按 count/圈 折算，物理量不随换电机变化：
+    //   141 度/s（约 0.4 圈/s）、约 8.8 度/s^2，走完一圈约 3.25s。
+    localparam signed [31:0] TRAJ_VMAX  = `CFG_TRAJ_VMAX;   // 最大速度（count/50ms）≙ 141 度/s
+    localparam signed [31:0] TRAJ_ASTEP = `CFG_TRAJ_ASTEP;  // 每档速度增量（count/50ms）
     // 【2026-10-04】加速度分频（速度每 TRAJ_ACC_DIV 拍才变一档）。
     //   曾设 2 把加速度减半试"起步太急"，但那是误判 —— 用户实测"不是速度问题"，
     //   真正的毛病是横杆运动本身不连续（见文件末"运动不连续"注释），所以调回 1。【2026-10-06 又设 2：K2/K3 短按"经常冲过头"—— 减速只有 400ms/36 count，比位置环能跟的更快，横杆一路落后、到站才猛追而冲过；加减速各减半后跟得上（一圈 2.9->3.25s）】
@@ -81,10 +83,10 @@ module ctrl_fsm(
     //----------------- 长按点动参数（2026-10-04）-----------------
     // K2/K3 按住不放时，目标以 JOG_STEP 每 50ms 的速度恒定缓慢推移（松手立即停），
     // 用来手动把横杆"挪"到想要的位置演示（不走梯形曲线，就是匀速慢移）。
-    //   JOG_STEP = 4 -> 80 count/s（走 1 圈约 5s）。2026-10-04 由 2 提上来（用户嫌慢）。
+    //   当前约 70.6 度/s（走 1 圈约 5s）。2026-10-04 由半速提上来（用户嫌慢）。
     //   注：点动速度提高还有个附带好处 —— 位置误差累积更快、更快越过"推动阈值"，
     //   粘滑的"停"那半段会变短。再快就是 6 / 8（一圈 3.4s / 2.6s）。
-    localparam signed [31:0] JOG_STEP = 32'sd4;   // 80 count/s（一圈约 5s）【2026-10-06 试过 2（40 count/s），与平衡无关，已回 4】
+    localparam signed [31:0] JOG_STEP = `CFG_JOG_STEP;   // 约 70.6 度/s（一圈约 5s）【2026-10-06 试过半速，与平衡无关，已回原值】
 
     //----------------- 状态编码 ----------------
     localparam [5:0] S_STOP = 6'd0;
@@ -195,7 +197,9 @@ module ctrl_fsm(
     //     积分），相位裕度不够 -> 运动一会儿后低频摆（已实测，见 pid_pos.v 注释）。
     //   整定：顿挫还在就把 POS_FF 加大（如 8~10）；横杆跑得偏快/到位过冲就减小（如 3）。
     //   注意 direction 只看"运动意图"：轨迹速度的方向，或点动的按键方向。
-    localparam signed [15:0] POS_FF = 16'sd3;   // 【2026-10-06】0 -> 3：位置环积分已关掉（I_MAX=0），恒定推力改由固定前馈提供（不引入第二个积分器）
+    localparam signed [15:0] POS_FF = `CFG_POS_FF;   // 【2026-10-06】0 -> 3：位置环积分已关掉（I_MAX=0），恒定推力改由固定前馈提供（不引入第二个积分器）
+                                                     //   它作用在角度环目标上（角度 count 域），**不随位置分辨率缩放**；
+                                                     //   但换电机后摩擦特性变了，到货要重新整定（见 pendulum_cfg.vh）
 
     wire signed [15:0] pos_ff = (traj_vel >  32'sd0) ?  POS_FF :
                                 (traj_vel <  32'sd0) ? -POS_FF :

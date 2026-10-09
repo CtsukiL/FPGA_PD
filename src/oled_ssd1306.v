@@ -18,13 +18,15 @@
 //       上电后第一轮刷全部 8 页（0~7）把显存里随机的上电值清掉，否则会满屏白点
 // 字库：只做用到的字符（5x7 点阵放在 6x8 格内）
 //============================================================================
+`include "src/pendulum_cfg.vh"   // 360 度对应的 count、0.1 度系数（换电机只改那个文件）
+
 module oled_ssd1306 #(
     parameter CLK_HZ = 50000000,
     parameter SCL_HZ = 400000
 )(
     input  wire               clk,
     input  wire               rst_n,
-    input  wire signed [31:0] location,      // 横杆位置(count)，408count = 360 度
+    input  wire signed [31:0] location,      // 横杆位置(count)，CFG_CNT_PER_REV count = 360 度
     input  wire [11:0]        angle,         // 摆杆角度值 0~4095
     input  wire [11:0]        center_angle,  // 竖直平衡点角度值
     input  wire signed [31:0] pos_set,       // 【演示】目标位置(count)
@@ -51,12 +53,13 @@ module oled_ssd1306 #(
     end
 
     //----------------- 数值换算：统一用 0.1 度为单位 -----------------
-    // 横杆：超过一圈（408 count = 360 度）自动清零回绕，屏幕永远在 -360 ~ +360 度内；
-    //       deg*10 = location * 3600 / 408 约等于 (location * 9039) >>> 10（误差 0.04%）
+    // 横杆：超过一圈（CFG_CNT_PER_REV count = 360 度）自动清零回绕，屏幕永远在 -360 ~ +360 度内；
+    //       deg*10 = location * 3600 / CFG_CNT_PER_REV 约等于 (location * CFG_DEG_K) >>> 10
+    //       （两个系数都在 pendulum_cfg.vh 里，随换电机自动折算）
     //       只影响显示：位置环、串口上报仍用原始 location
     //       Verilog 的 % 取余符号跟随被除数，所以 +410 -> +2、-410 -> -2，双向回绕都正确
-    wire signed [31:0] loc_wrap = location % 32'sd408;      // -407 ~ +407
-    wire signed [31:0] arm_v    = (loc_wrap * 32'sd9039) >>> 10;
+    wire signed [31:0] loc_wrap = location % `CFG_CNT_PER_REV;      // 一圈以内
+    wire signed [31:0] arm_v    = (loc_wrap * `CFG_DEG_K) >>> 10;
     // 摆杆：1 count 约 0.1 度（相对平衡点）
     wire signed [31:0] rod_v   = $signed({20'd0, angle}) - $signed({20'd0, center_angle});
 
@@ -369,11 +372,11 @@ module oled_ssd1306 #(
     wire [3:0]  vv_d1  = vv_bcd[7:4];
     wire [3:0]  vv_d0  = vv_bcd[3:0];
 
-    // DEG：横杆"实际位移"换算成轮子转角（整数度，408 count = 360 度）。
-    //   x9039>>10 -> 0.1 度（与旧 arm_v 同系数），再 /10 取整度。
+    // DEG：横杆"实际位移"换算成轮子转角（整数度，CFG_CNT_PER_REV count = 360 度）。
+    //   x CFG_DEG_K >> 10 -> 0.1 度（与 arm_v 同系数，见 pendulum_cfg.vh），再 /10 取整度。
     //   ⚠ 与旧 arm_v 的区别：这里 **不做一圈回绕**，所以按一次 K2 能看到 360 一直累加，
     //     而不是到 360 就跳回 0（演示"走了多少度"要的就是累计值）。
-    wire signed [31:0] deg_x10 = (location * 32'sd9039) >>> 10;   // 0.1 度
+    wire signed [31:0] deg_x10 = (location * `CFG_DEG_K) >>> 10;   // 0.1 度
     wire signed [31:0] deg_v   = deg_x10 / 32'sd10;               // 整数度
     wire        dg_neg = (deg_v < 32'sd0);
     wire [31:0] dg_abs = dg_neg ? (-deg_v) : deg_v;
@@ -447,7 +450,7 @@ module oled_ssd1306 #(
     endfunction
 
     //----------------- page4：DEG ±xxxx  POS ±xxxx（横杆位移角度 / 目标位置）-----------------
-    // DEG = 横杆实际位移换算的轮子转角（整数度，不回绕）：按一次 K2（+408 count）应看到 360
+    // DEG = 横杆实际位移换算的轮子转角（整数度，不回绕）：按一次 K2（+1 圈）应看到 360
     // POS = 目标位置 pos_set（count）
     function [6:0] ln4_char;
         input [4:0] idx;
