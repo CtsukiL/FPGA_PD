@@ -56,7 +56,7 @@ module ctrl_fsm(
 
     //----------------- 参数（与 STM32 版逐项一致）-----------------
     localparam signed [15:0] CENTER_RANGE = 16'sd500;   // 中心区间 ±500
-    localparam signed [15:0] START_PWM    = 16'sd50;    // 起摆推力（2026-10-02 35→45→50）
+    localparam signed [15:0] START_PWM    = 16'sd35;    // 起摆推力【2026-10-10 换 JGA25-370：50 -> 35；新电机扭矩约 2.3 倍，50 会把摆杆甩过头】
     localparam [7:0]         START_TIME   = 8'd100;     // 起摆推力持续时间 100ms
     localparam signed [31:0] POS_STEP     = `CFG_POS_STEP;   // 一次 360 度 = 1 圈（数值见 pendulum_cfg.vh）
     localparam signed [31:0] POS_LIMIT    = `CFG_POS_LIMIT;  // 位置目标限幅 ±10 圈
