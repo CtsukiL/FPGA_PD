@@ -1,23 +1,23 @@
 GowinSynthesis start
 Running parser ...
-Analyzing Verilog file 'E:\FPGA_PD\src\adc_if.v'
 Analyzing Verilog file 'E:\FPGA_PD\src\clk_tick.v'
-Analyzing Verilog file 'E:\FPGA_PD\src\ctrl_fsm.v'
-Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\ctrl_fsm.v":24)
-Back to file 'E:\FPGA_PD\src\ctrl_fsm.v'("E:\FPGA_PD\src\ctrl_fsm.v":24)
+Analyzing Verilog file 'E:\FPGA_PD\src\adc_if.v'
 Analyzing Verilog file 'E:\FPGA_PD\src\encoder_if.v'
 Analyzing Verilog file 'E:\FPGA_PD\src\key_ctrl.v'
-Analyzing Verilog file 'E:\FPGA_PD\src\led_ind.v'
-Analyzing Verilog file 'E:\FPGA_PD\src\motor_pwm.v'
-Analyzing Verilog file 'E:\FPGA_PD\src\oled_ssd1306.v'
-Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\oled_ssd1306.v":21)
-Back to file 'E:\FPGA_PD\src\oled_ssd1306.v'("E:\FPGA_PD\src\oled_ssd1306.v":21)
 Analyzing Verilog file 'E:\FPGA_PD\src\pid_angle.v'
 Analyzing Verilog file 'E:\FPGA_PD\src\pid_pos.v'
 Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\pid_pos.v":15)
 Back to file 'E:\FPGA_PD\src\pid_pos.v'("E:\FPGA_PD\src\pid_pos.v":15)
-Analyzing Verilog file 'E:\FPGA_PD\src\top.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\ctrl_fsm.v'
+Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\ctrl_fsm.v":24)
+Back to file 'E:\FPGA_PD\src\ctrl_fsm.v'("E:\FPGA_PD\src\ctrl_fsm.v":24)
+Analyzing Verilog file 'E:\FPGA_PD\src\motor_pwm.v'
 Analyzing Verilog file 'E:\FPGA_PD\src\uart_dbg.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\led_ind.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\oled_ssd1306.v'
+Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\oled_ssd1306.v":21)
+Back to file 'E:\FPGA_PD\src\oled_ssd1306.v'("E:\FPGA_PD\src\oled_ssd1306.v":21)
+Analyzing Verilog file 'E:\FPGA_PD\src\top.v'
 Compiling module 'top'("E:\FPGA_PD\src\top.v":18)
 Compiling module 'clk_tick'("E:\FPGA_PD\src\clk_tick.v":13)
 Compiling module 'adc_if'("E:\FPGA_PD\src\adc_if.v":27)

@@ -45,9 +45,9 @@
 // --- 位置移动（ctrl_fsm.v）---
 `define CFG_POS_STEP      (`CFG_CNT_PER_REV)                                    // K2/K3 一次 = 360 度 = 1 圈
 `define CFG_POS_LIMIT     (`CFG_CNT_PER_REV * 10)                               // 位置目标限幅 ±10 圈
-`define CFG_TRAJ_VMAX     ((`CFG_CNT_PER_REV * 141 + 3600) / 7200)              // 轨迹最高速 141 度/s（count/50ms，四舍五入）
+`define CFG_TRAJ_VMAX     ((`CFG_CNT_PER_REV * 211 + 3600) / 7200)              // 轨迹最高速【2026-10-10 用户要求 +50%：141 -> 211 度/s（937 档 = 27 count/50ms）】
 `define CFG_TRAJ_ASTEP    ((`CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)   // 每档加速度（保持约 8.8 度/s^2）
-`define CFG_JOG_STEP      ((4 * `CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)  // 长按点动约 70.6 度/s
+`define CFG_JOG_STEP      ((8 * `CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)  // 长按点动【2026-10-10 用户要求 x2：约 141 度/s（937 档 = 18 count/50ms，一圈约 2.6s）】
 
 // --- 摩擦前馈（ctrl_fsm.v）---
 //   它加在"角度环目标"上，单位是角度 count（不是位置 count），所以**不随分辨率缩放**。
