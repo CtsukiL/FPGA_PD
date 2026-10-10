@@ -62,6 +62,13 @@ module ctrl_fsm(
     localparam signed [31:0] POS_LIMIT    = `CFG_POS_LIMIT;  // 位置目标限幅 ±10 圈
     localparam [11:0]        CENTER_INIT  = 12'd2400;   // 平衡点角度初值（0~4095 尺度）= 屏上 CT 600；上电默认值，按 K4 后会被实际标定值覆盖【2026-10-06 先设 2396(CT 599)，按用户要求取整到 600】
 
+    //----------------- 起摆前置：摆杆静止判定（2026-10-10）-----------------
+    // 需求：停止态要"摆杆不动 1 秒以上"再按 K1 才起摆（避免手还扶着、或摆杆还在晃就起摆）。
+    // 静止定义：当前角度与参考点相差不超过 STILL_RANGE；一旦超了就把参考点跟到当前值并
+    //   重新计时，所以缓慢漂移不会被误判成静止。
+    localparam signed [12:0] STILL_RANGE = 13'sd16;    // 角度 ±16 count = 屏上 CNT 行的 ±4
+    localparam [9:0]         STILL_TIME  = 10'd1000;   // 需要连续静止 1000ms
+
     //----------------- 轨迹发生器参数（2026-10-04，赛题拓展 2）-----------------
     // 赛题拓展 2 "让电机按照特定的速度曲线或轨迹运动"：
     //   K2/K3 设的目标 pos_set 不再直接给位置环，而是交给这里的梯形速度曲线发生器，
@@ -99,6 +106,9 @@ module ctrl_fsm(
     reg [11:0] a0, a1, a2;          // 本次 / 上次 / 上上次角度（40ms 间隔采样）
     reg [7:0]  count_time;          // 起摆推力计时（ms）
 
+    reg [9:0]  still_ms;            // 【2026-10-10】已连续静止的时长（ms）
+    reg [11:0] still_ref;           // 静止判定的参考角度
+
     // 轨迹发生器状态（2026-10-04，赛题拓展 2）
     reg signed [31:0] pos_set;      // K2/K3 设定的目标位置（count，阶跃）
     reg signed [31:0] pos_cmd;      // 轨迹发生器输出（count）= 位置环的 target
@@ -112,6 +122,10 @@ module ctrl_fsm(
 
     wire signed [15:0] ang_out_w;   // 角度环输出
     wire signed [15:0] pos_out_w;   // 位置环输出
+
+    // 【2026-10-10】起摆前置：角度偏离参考点多少 / 是否已静止够久（给 K1 用）
+    wire signed [12:0] still_d  = $signed({1'b0, angle}) - $signed({1'b0, still_ref});
+    wire               still_ok = (still_ms >= STILL_TIME);
 
     //----------------- 区间与极值判据（对应 STM32 的 C±R 判断）-----------------
     wire signed [15:0] ang_s = $signed({4'b0000, angle});
@@ -206,6 +220,23 @@ module ctrl_fsm(
                                 ev_jog_plus          ?  POS_FF :
                                 ev_jog_minus         ? -POS_FF : 16'sd0;
 
+    //----------------- 起摆前的"摆杆静止"计时（2026-10-10）-----------------
+    // 1ms 一拍：角度还在 STILL_RANGE 内就继续累加；一旦超出去就把参考点跟到当前角度、
+    // 计时清零（所以缓慢漂移不会被当成静止）。still_ms 到 STILL_TIME 即视为静止够久。
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            still_ms  <= 10'd0;
+            still_ref <= 12'd0;
+        end else if (tick_1ms) begin
+            if ((still_d > STILL_RANGE) || (still_d < -STILL_RANGE)) begin
+                still_ref <= angle;
+                still_ms  <= 10'd0;
+            end else if (still_ms < STILL_TIME) begin
+                still_ms <= still_ms + 10'd1;
+            end
+        end
+    end
+
     //----------------- 主状态机 ----------------
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -275,8 +306,12 @@ module ctrl_fsm(
 
             //---------- K1：启停 ----------
             if (ev_start_stop) begin
-                if (run_state == S_STOP) run_state <= S_21;     // 停止 -> 开始起摆
-                else                     run_state <= S_STOP;   // 运行 -> 停止
+                if (run_state == S_STOP) begin
+                    // 【2026-10-10】起摆前置：摆杆静止 ≥1s（still_ok）才响应，否则忽略这次按键
+                    if (still_ok) run_state <= S_21;            // 停止 -> 开始起摆
+                end else begin
+                    run_state <= S_STOP;                        // 运行 -> 停止
+                end
             end
 
             //---------- 状态机 ----------

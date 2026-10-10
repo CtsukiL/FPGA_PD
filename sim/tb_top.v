@@ -267,7 +267,8 @@ module tb_top;
         alpha    = 175.0 * PI / 180.0;
         alpha_d  = 0.0;
         $display("[%0d ms] >> rod held at %0.1f deg", phys_ms, alpha*RAD2DEG);
-        #(NS_PER_MS * 300);
+        // 【2026-10-10】扶住 1.2s：满足"摆杆静止 ≥1s 才起摆"的前置条件（扶住期间角度恒定）
+        #(NS_PER_MS * 1200);
 
         // ---- 2.5) 松手：放开摆杆，准备起摆 ----
         hold_rod = 1'b0;
