@@ -1,0 +1,52 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'E:\FPGA_PD\src\adc_if.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\clk_tick.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\ctrl_fsm.v'
+Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\ctrl_fsm.v":24)
+Back to file 'E:\FPGA_PD\src\ctrl_fsm.v'("E:\FPGA_PD\src\ctrl_fsm.v":24)
+Analyzing Verilog file 'E:\FPGA_PD\src\encoder_if.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\key_ctrl.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\led_ind.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\motor_pwm.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\oled_ssd1306.v'
+Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\oled_ssd1306.v":21)
+Back to file 'E:\FPGA_PD\src\oled_ssd1306.v'("E:\FPGA_PD\src\oled_ssd1306.v":21)
+Analyzing Verilog file 'E:\FPGA_PD\src\pid_angle.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\pid_pos.v'
+Analyzing included file 'src\pendulum_cfg.vh'("E:\FPGA_PD\src\pid_pos.v":15)
+Back to file 'E:\FPGA_PD\src\pid_pos.v'("E:\FPGA_PD\src\pid_pos.v":15)
+Analyzing Verilog file 'E:\FPGA_PD\src\top.v'
+Analyzing Verilog file 'E:\FPGA_PD\src\uart_dbg.v'
+Compiling module 'top'("E:\FPGA_PD\src\top.v":18)
+Compiling module 'clk_tick'("E:\FPGA_PD\src\clk_tick.v":13)
+Compiling module 'adc_if'("E:\FPGA_PD\src\adc_if.v":27)
+Compiling module 'encoder_if'("E:\FPGA_PD\src\encoder_if.v":12)
+Compiling module 'key_ctrl'("E:\FPGA_PD\src\key_ctrl.v":13)
+Compiling module 'ctrl_fsm'("E:\FPGA_PD\src\ctrl_fsm.v":26)
+Compiling module 'pid_angle'("E:\FPGA_PD\src\pid_angle.v":14)
+Compiling module 'pid_pos'("E:\FPGA_PD\src\pid_pos.v":17)
+Compiling module 'motor_pwm'("E:\FPGA_PD\src\motor_pwm.v":10)
+Compiling module 'oled_ssd1306(SCL_HZ=50000)'("E:\FPGA_PD\src\oled_ssd1306.v":23)
+Compiling module 'uart_dbg'("E:\FPGA_PD\src\uart_dbg.v":17)
+Compiling module 'led_ind'("E:\FPGA_PD\src\led_ind.v":11)
+NOTE  (EX0101) : Current top module is "top"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "E:\FPGA_PD\impl\gwsynthesis\pendulum_fpga.vg" completed
+[100%] Generate report file "E:\FPGA_PD\impl\gwsynthesis\pendulum_fpga_syn.rpt.html" completed
+GowinSynthesis finish

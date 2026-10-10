@@ -1,28 +1,7 @@
-# Gowin and ModelSim generated outputs
-impl/gwsynthesis/
-impl/temp/
-impl/pnr/*
-!impl/pnr/pendulum_fpga.fs
-sim/work/
-sim/work_chk/
-sim/work_oled/
-sim/*.log
-sim/transcript
-sim/vsim*
-sim/wlft*
-sim/*.mti
-sim/*.mpf
-sim/*.cr.mti
-sim/modelsim.ini
-
-# Python generated files
-__pycache__/
-doc/__pycache__/
-*.pyc
-
-# Local editor/project state
-*.gprj.user
-.DS_Store
-
-# 改文件前的本地备份（xxx.v.bak01 ...）
+# 【2026-10-10 用户要求】除本地备份外，其余全部入库：
+#   构建产物（impl/gwsynthesis、impl/pnr、impl/temp）、ModelSim 仿真库（sim/work）、
+#   ModelSim 输出（modelsim.ini、transcript 等）、IDE 本地状态（*.gprj.user）
+#   都随 git 保存，方便整包迁移与对照。
+#
+# 只排除一件事：改代码前的本地备份（xxx.v.bak01 ...）
 *.bak*

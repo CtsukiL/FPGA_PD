@@ -1,0 +1,126 @@
+[
+ {
+  "InstFile" : "E:/FPGA_PD/src/top.v",
+  "InstLine" : 18,
+  "InstName" : "top",
+  "ModuleFile" : "E:/FPGA_PD/src/top.v",
+  "ModuleLine" : 18,
+  "ModuleName" : "top",
+  "SubInsts" : [
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 52,
+    "InstName" : "u_clk_tick",
+    "ModuleFile" : "E:/FPGA_PD/src/clk_tick.v",
+    "ModuleLine" : 13,
+    "ModuleName" : "clk_tick"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 68,
+    "InstName" : "u_adc",
+    "ModuleFile" : "E:/FPGA_PD/src/adc_if.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "adc_if"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 84,
+    "InstName" : "u_encoder",
+    "ModuleFile" : "E:/FPGA_PD/src/encoder_if.v",
+    "ModuleLine" : 12,
+    "ModuleName" : "encoder_if"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 107,
+    "InstName" : "u_key0",
+    "ModuleFile" : "E:/FPGA_PD/src/key_ctrl.v",
+    "ModuleLine" : 13,
+    "ModuleName" : "key_ctrl"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 116,
+    "InstName" : "u_key1",
+    "ModuleFile" : "E:/FPGA_PD/src/key_ctrl.v",
+    "ModuleLine" : 13,
+    "ModuleName" : "key_ctrl"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 125,
+    "InstName" : "u_key2",
+    "ModuleFile" : "E:/FPGA_PD/src/key_ctrl.v",
+    "ModuleLine" : 13,
+    "ModuleName" : "key_ctrl"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 134,
+    "InstName" : "u_key3",
+    "ModuleFile" : "E:/FPGA_PD/src/key_ctrl.v",
+    "ModuleLine" : 13,
+    "ModuleName" : "key_ctrl"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 155,
+    "InstName" : "u_ctrl_fsm",
+    "ModuleFile" : "E:/FPGA_PD/src/ctrl_fsm.v",
+    "ModuleLine" : 26,
+    "ModuleName" : "ctrl_fsm",
+    "SubInsts" : [
+     {
+      "InstFile" : "E:/FPGA_PD/src/ctrl_fsm.v",
+      "InstLine" : 468,
+      "InstName" : "u_pid_angle",
+      "ModuleFile" : "E:/FPGA_PD/src/pid_angle.v",
+      "ModuleLine" : 14,
+      "ModuleName" : "pid_angle"
+     },
+     {
+      "InstFile" : "E:/FPGA_PD/src/ctrl_fsm.v",
+      "InstLine" : 478,
+      "InstName" : "u_pid_pos",
+      "ModuleFile" : "E:/FPGA_PD/src/pid_pos.v",
+      "ModuleLine" : 17,
+      "ModuleName" : "pid_pos"
+     }
+    ]
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 184,
+    "InstName" : "u_motor",
+    "ModuleFile" : "E:/FPGA_PD/src/motor_pwm.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "motor_pwm"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 200,
+    "InstName" : "u_oled",
+    "ModuleFile" : "E:/FPGA_PD/src/oled_ssd1306.v",
+    "ModuleLine" : 23,
+    "ModuleName" : "oled_ssd1306"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 216,
+    "InstName" : "u_uart_dbg",
+    "ModuleFile" : "E:/FPGA_PD/src/uart_dbg.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "uart_dbg"
+   },
+   {
+    "InstFile" : "E:/FPGA_PD/src/top.v",
+    "InstLine" : 237,
+    "InstName" : "u_led",
+    "ModuleFile" : "E:/FPGA_PD/src/led_ind.v",
+    "ModuleLine" : 11,
+    "ModuleName" : "led_ind"
+   }
+  ]
+ }
+]

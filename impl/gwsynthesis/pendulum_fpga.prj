@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2A-18C" package="PBGA256" speed="8" partNumber="GW2A-LV18PG256C8/I7"/>
+    <FileList>
+        <File path="E:\FPGA_PD\src\adc_if.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\clk_tick.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\ctrl_fsm.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\encoder_if.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\key_ctrl.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\led_ind.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\motor_pwm.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\oled_ssd1306.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\pid_angle.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\pid_pos.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\top.v" type="verilog"/>
+        <File path="E:\FPGA_PD\src\uart_dbg.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="2000"/>
+        <Option type="output_file" value="E:\FPGA_PD\impl\gwsynthesis\pendulum_fpga.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>

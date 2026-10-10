@@ -1,0 +1,61 @@
+{
+ "Device" : "GW2A-18C",
+ "Files" : [
+  {
+   "Path" : "E:/FPGA_PD/src/adc_if.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/clk_tick.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/ctrl_fsm.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/encoder_if.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/key_ctrl.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/led_ind.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/motor_pwm.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/oled_ssd1306.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/pid_angle.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/pid_pos.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/top.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "E:/FPGA_PD/src/uart_dbg.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "E:/FPGA_PD/impl/temp/rtl_parser.result",
+ "Top" : "",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}
