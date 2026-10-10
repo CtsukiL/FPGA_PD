@@ -1,21 +1,21 @@
 //
 //Written by GowinSynthesis
 //Tool Version "V1.9.10.02"
-//Sat Oct 10 16:33:45 2026
+//Sat Oct 10 16:37:32 2026
 
 //Source file index table:
-//file0 "\E:/FPGA_PD/src/clk_tick.v"
-//file1 "\E:/FPGA_PD/src/adc_if.v"
-//file2 "\E:/FPGA_PD/src/encoder_if.v"
-//file3 "\E:/FPGA_PD/src/key_ctrl.v"
-//file4 "\E:/FPGA_PD/src/pid_angle.v"
-//file5 "\E:/FPGA_PD/src/pid_pos.v"
-//file6 "\E:/FPGA_PD/src/ctrl_fsm.v"
-//file7 "\E:/FPGA_PD/src/motor_pwm.v"
-//file8 "\E:/FPGA_PD/src/uart_dbg.v"
-//file9 "\E:/FPGA_PD/src/led_ind.v"
-//file10 "\E:/FPGA_PD/src/oled_ssd1306.v"
-//file11 "\E:/FPGA_PD/src/top.v"
+//file0 "\E:/FPGA_PD/src/adc_if.v"
+//file1 "\E:/FPGA_PD/src/clk_tick.v"
+//file2 "\E:/FPGA_PD/src/ctrl_fsm.v"
+//file3 "\E:/FPGA_PD/src/encoder_if.v"
+//file4 "\E:/FPGA_PD/src/key_ctrl.v"
+//file5 "\E:/FPGA_PD/src/led_ind.v"
+//file6 "\E:/FPGA_PD/src/motor_pwm.v"
+//file7 "\E:/FPGA_PD/src/oled_ssd1306.v"
+//file8 "\E:/FPGA_PD/src/pid_angle.v"
+//file9 "\E:/FPGA_PD/src/pid_pos.v"
+//file10 "\E:/FPGA_PD/src/top.v"
+//file11 "\E:/FPGA_PD/src/uart_dbg.v"
 `timescale 100 ps/100 ps
 module clk_tick (
   sys_clk_d,
