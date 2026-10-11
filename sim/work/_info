@@ -9,241 +9,241 @@ z2
 cModel Technology
 Z0 dE:/FPGA_PD/sim
 T_opt
-!s110 1791681723
-V3P2R8QGiX16Q]eK92Eo]W1
+Z1 !s110 1791682110
+Vd>GVW>6bgPFMkZz1H`lC^1
 04 6 4 work tb_top fast 0
-=1-e4a8dfaf484b-6acae4bb-df-715c
+=1-e4a8dfaf484b-6acae63e-2d1-58b4
 o-quiet -auto_acc_if_foreign -work work +acc
-Z1 tCvgOpt 0
+Z2 tCvgOpt 0
 n@_opt
 OL;O;10.7;67
 vadc_if
-Z2 !s110 1791681721
+Z3 !s110 1791682109
 !i10b 1
 !s100 <_0J_[T3UWkcaQL>iBb=62
 IS`h>UaFLgHi`D3:k=l=e@3
-Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 VDg1SIo80bB@j0V0VzS_@n1
 R0
-Z4 w1791364309
+Z5 w1791364309
 8../src/adc_if.v
 F../src/adc_if.v
 L0 27
-Z5 OL;L;10.7;67
+Z6 OL;L;10.7;67
 r1
 !s85 0
 31
-Z6 !s108 1791681721.000000
+Z7 !s108 1791682109.000000
 !s107 ../src/adc_if.v|
 !s90 -work|work|+incdir+..|../src/adc_if.v|
 !i113 0
-Z7 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-Z8 !s92 -work work +incdir+.. -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-R1
-vclk_tick
+Z8 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z9 !s92 -work work +incdir+.. -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
 R2
+vclk_tick
+R3
 !i10b 1
 !s100 _Lfg2TKl:^H1OUhOXeD9K3
 IRzl_cA[??kz`aS;S?heQ:1
-R3
+R4
 R0
 w1791681639
 8../src/clk_tick.v
 F../src/clk_tick.v
-Z9 L0 13
-R5
+Z10 L0 13
+R6
 r1
 !s85 0
 31
-R6
+R7
 !s107 ../src/clk_tick.v|
 !s90 -work|work|+incdir+..|../src/clk_tick.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vctrl_fsm
-Z10 !s110 1791681722
+R3
 !i10b 1
 !s100 WeWN1aCCRa]T3`f9>^dSO0
 Ih:SPeD]WRXHfU_WM4Q3^P1
-R3
+R4
 R0
 Z11 w1791681702
 8../src/ctrl_fsm.v
 F../src/ctrl_fsm.v
 L0 26
-R5
+R6
 r1
 !s85 0
 31
-Z12 !s108 1791681722.000000
+R7
 !s107 ../src/pendulum_cfg.vh|../src/ctrl_fsm.v|
 !s90 -work|work|+incdir+..|../src/ctrl_fsm.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vencoder_if
-R10
+R3
 !i10b 1
 !s100 bMi7@VeIhcJ:g3Na954<M0
 IOT[AbNf2j11d6LV8cA=U43
-R3
+R4
 R0
 w1791531501
 8../src/encoder_if.v
 F../src/encoder_if.v
 L0 12
-R5
+R6
 r1
 !s85 0
 31
-R6
+R7
 !s107 ../src/encoder_if.v|
 !s90 -work|work|+incdir+..|../src/encoder_if.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vkey_ctrl
-R10
+R3
 !i10b 1
 !s100 :P?9KjKZlIZ[]ZhCQ;gHb2
 IdCZ=306n9>CS@:8QU`NG92
-R3
-R0
 R4
+R0
+R5
 8../src/key_ctrl.v
 F../src/key_ctrl.v
-R9
-R5
+R10
+R6
 r1
 !s85 0
 31
-R12
+R7
 !s107 ../src/key_ctrl.v|
 !s90 -work|work|+incdir+..|../src/key_ctrl.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vled_ind
-R10
+R1
 !i10b 1
 !s100 EZQXDlROiLKjSM]i4zFcS0
 IRDBD^g@zh1aT72mJ26F][2
-R3
-R0
 R4
+R0
+R5
 8../src/led_ind.v
 F../src/led_ind.v
 L0 11
-R5
+R6
 r1
 !s85 0
 31
-R12
+R7
 !s107 ../src/led_ind.v|
 !s90 -work|work|+incdir+..|../src/led_ind.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vmotor_pwm
-R10
+R3
 !i10b 1
 !s100 a_?J;OeQAQW_T?d5KjBX02
 IULZ;N@AY;2he<@RJM3_ZW2
-R3
-R0
 R4
+R0
+R5
 8../src/motor_pwm.v
 F../src/motor_pwm.v
 L0 10
-R5
+R6
 r1
 !s85 0
 31
-R12
+R7
 !s107 ../src/motor_pwm.v|
 !s90 -work|work|+incdir+..|../src/motor_pwm.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 voled_ssd1306
-R10
+R1
 !i10b 1
 !s100 lf:9Vo1dk_>a61@hnM0XX1
 I42beSFg1=?h>P[O130TdQ1
-R3
+R4
 R0
 R11
 8../src/oled_ssd1306.v
 F../src/oled_ssd1306.v
 L0 23
-R5
+R6
 r1
 !s85 0
 31
-R12
+Z12 !s108 1791682110.000000
 !s107 ../src/pendulum_cfg.vh|../src/oled_ssd1306.v|
 !s90 -work|work|+incdir+..|../src/oled_ssd1306.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vpid_angle
-R10
+R3
 !i10b 1
 !s100 0hJR<F1K52zELjlXgKAeF1
 IgnZ0HdzFP8:eW6jg1kg=:3
-R3
-R0
 R4
+R0
+R5
 8../src/pid_angle.v
 F../src/pid_angle.v
 L0 14
-R5
+R6
 r1
 !s85 0
 31
-R12
+R7
 !s107 ../src/pid_angle.v|
 !s90 -work|work|+incdir+..|../src/pid_angle.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vpid_pos
-R10
-!i10b 1
-!s100 4;UbJ<=6bfbmc]^[C7^b=0
-I>cU78`cE:aa0T48HU^3h`3
 R3
+!i10b 1
+!s100 Q:X@eiCiNQW=l2e?j`KIT0
+IF9<<4`ddUc?MfO9=6X;Ej1
+R4
 R0
-R11
+w1791682100
 8../src/pid_pos.v
 F../src/pid_pos.v
 Z13 L0 17
-R5
+R6
 r1
 !s85 0
 31
-R12
+R7
 !s107 ../src/pendulum_cfg.vh|../src/pid_pos.v|
 !s90 -work|work|+incdir+..|../src/pid_pos.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vtb_top
 DXx6 sv_std 3 std 0 22 >9az<^>2ff9DAl3OFGaAf1
-R10
+R1
 !i10b 1
 !s100 K4Z=AD89>?NGe?mhXz`_<3
 I1ToO3I?nDcR0dJGUk[9321
-R3
+R4
 !s105 tb_top_v_unit
 S1
 R0
@@ -251,7 +251,7 @@ R11
 8tb_top.v
 Ftb_top.v
 L0 28
-R5
+R6
 r1
 !s85 0
 31
@@ -261,19 +261,19 @@ R12
 !i113 0
 o-work work -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
 !s92 -work work +incdir+.. -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-R1
+R2
 vtop
-R10
+R1
 !i10b 1
 !s100 UPkl7bZZCfPQjQY[42jV:1
 I7L2>0=POTonQ3]PDWa9nZ1
-R3
+R4
 R0
 R11
 8../src/top.v
 F../src/top.v
 L0 18
-R5
+R6
 r1
 !s85 0
 31
@@ -281,28 +281,28 @@ R12
 !s107 ../src/top.v|
 !s90 -work|work|+incdir+..|../src/top.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2
 vuart_dbg
-R10
+R3
 !i10b 1
 !s100 o6BnUQA5nbb[PmkM_3Fo:3
 I>5V[nYaJ5PlVCgNo1f4MN1
-R3
-R0
 R4
+R0
+R5
 8../src/uart_dbg.v
 F../src/uart_dbg.v
 R13
-R5
+R6
 r1
 !s85 0
 31
-R12
+R7
 !s107 ../src/uart_dbg.v|
 !s90 -work|work|+incdir+..|../src/uart_dbg.v|
 !i113 0
-R7
 R8
-R1
+R9
+R2

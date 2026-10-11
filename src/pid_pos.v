@@ -45,7 +45,14 @@ module pid_pos(
     //----------------- 误差计算 ----------------
     wire signed [31:0] err   = target - location;
     reg  signed [31:0] err1;
-    wire signed [31:0] d_err = err - err1;      // 20ms 内的位置变化
+    reg  signed [31:0] err2;
+    // D 项（速度项）：用 2 拍（40ms）平均差分，再过 ±2 count 的噪声门限。
+    // 【2026-10-11】节拍 50 -> 20ms 后 KD ×2.5 保住了阻尼，但位置量化噪声（±1 count）
+    //   不随采样率缩小，会被 KD 放大成 ±4.35 count 的角度目标偏置、穿透输出死区(2)
+    //   -> 摆杆高频来回晃。2 拍平均让噪声降到约 0.7 倍（真实速度的信号量不变），
+    //   门限再把残余截掉 —— 只影响 |d_err| <= 2 的极小速度段，正常运动阻尼完整保留。
+    wire signed [31:0] d_err_raw = (err - err2) >>> 1;   // 平均每拍变化（等效原来的 d_err）
+    wire signed [31:0] d_err = (d_err_raw > -32'sd2 && d_err_raw < 32'sd2) ? 32'sd0 : d_err_raw;
 
     // 积分：累加 -> 限幅 -> 弱泄漏（对绝对值做泄漏，保证正负对称）
     // 【2026-10-06】抗饱和（条件积分）：已经顶到限幅、且误差还在同方向推时，本拍不再累加。
@@ -77,6 +84,7 @@ module pid_pos(
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             err1    <= 32'sd0;
+            err2    <= 32'sd0;
             err_int <= 32'sd0;
             out     <= 16'sd0;
         end else if (clr) begin
@@ -85,10 +93,12 @@ module pid_pos(
             // 注意不能写成"err1 <= err"：enc_zero 要下一拍才把位置清零，
             // 这一拍 err 还是旧的大偏差，会变成一次微分冲击。
             err1    <= 32'sd0;
+            err2    <= 32'sd0;
             err_int <= 32'sd0;
             out     <= 16'sd0;
         end else if (calc_en) begin
             err1    <= err;
+            err2    <= err1;
             err_int <= active ? i_leak : 32'sd0;   // 【2026-10-06】静止态立刻清零（避免残留偏置带跑横杆）
             out     <= o_dz[15:0];
         end
