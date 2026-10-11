@@ -1,5 +1,5 @@
 //============================================================================
-// pid_pos.v —— 外环位置环（50ms）
+// pid_pos.v —— 外环位置环（20ms）
 // 对应 STM32 版 (2) 工程 main.c 的 LocationPID（走 PID.c 的 PID_Update）：
 //   Kp = 0.4, Kd = 4，输出限幅 ±40【2026-10-06 由 ±100 收到 ±40：治运动结束后来回晃】
 //   【2026-10-06】加回积分（KI 0.10 / I_MAX 48 / 泄漏 1/32，只在运动态参与）：
@@ -17,7 +17,7 @@
 module pid_pos(
     input  wire               clk,          // 50MHz 系统时钟
     input  wire               rst_n,        // 低电平复位
-    input  wire               calc_en,      // 50ms 计算脉冲
+    input  wire               calc_en,      // 20ms 计算脉冲
     input  wire signed [31:0] target,       // 位置目标（count，1 圈 = CFG_CNT_PER_REV，见 pendulum_cfg.vh）
     input  wire signed [31:0] location,     // 实测位置（count）
     input  wire               clr,          // 刷新（起摆入区：把上次误差置为当前误差，D 项首拍为 0）
@@ -45,7 +45,7 @@ module pid_pos(
     //----------------- 误差计算 ----------------
     wire signed [31:0] err   = target - location;
     reg  signed [31:0] err1;
-    wire signed [31:0] d_err = err - err1;      // 50ms 内的位置变化
+    wire signed [31:0] d_err = err - err1;      // 20ms 内的位置变化
 
     // 积分：累加 -> 限幅 -> 弱泄漏（对绝对值做泄漏，保证正负对称）
     // 【2026-10-06】抗饱和（条件积分）：已经顶到限幅、且误差还在同方向推时，本拍不再累加。
@@ -73,7 +73,7 @@ module pid_pos(
     // 再过输出死区
     wire signed [39:0] o_dz  = (o_lim > -DEADZONE && o_lim < DEADZONE) ? 40'sd0 : o_lim;
 
-    //----------------- 每 50ms 更新一次 ----------------
+    //----------------- 每 20ms 更新一次 ----------------
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             err1    <= 32'sd0;
