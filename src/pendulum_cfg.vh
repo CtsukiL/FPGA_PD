@@ -45,9 +45,9 @@
 // --- 位置移动（ctrl_fsm.v）---
 `define CFG_POS_STEP      (`CFG_CNT_PER_REV)                                    // K2/K3 一次 = 360 度 = 1 圈
 `define CFG_POS_LIMIT     (`CFG_CNT_PER_REV * 10)                               // 位置目标限幅 ±10 圈
-`define CFG_TRAJ_VMAX     ((`CFG_CNT_PER_REV * 211 + 9000) / 18000)             // 轨迹最高速 211 度/s（单位 count/20ms 拍；937 档 = 11）【节拍 50->20ms：3600/7200 -> 9000/18000】
+`define CFG_TRAJ_VMAX     ((`CFG_CNT_PER_REV * 211 + 3600) / 7200)              // 轨迹最高速【2026-10-10 用户要求 +50%：141 -> 211 度/s（937 档 = 27 count/50ms）】
 `define CFG_TRAJ_ASTEP    ((`CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)   // 每档加速度（保持约 8.8 度/s^2）
-`define CFG_JOG_STEP      ((3 * `CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)  // 长按点动 约 141 度/s（单位 count/20ms 拍；937 档 = 7）【节拍 50->20ms：系数 8 -> 3】
+`define CFG_JOG_STEP      ((8 * `CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)  // 长按点动【2026-10-10 用户要求 x2：约 141 度/s（937 档 = 18 count/50ms，一圈约 2.6s）】
 
 // --- 摩擦前馈（ctrl_fsm.v）---
 //   它加在"角度环目标"上，单位是角度 count（不是位置 count），所以**不随分辨率缩放**。
@@ -59,8 +59,8 @@
 //   分辨率提高 N 倍，同一物理误差对应的 count 误差就大 N 倍，系数必须除 N，
 //   否则等效增益凭空变硬 N 倍（会振荡）。
 `define CFG_POS_KP_Q16    ((26214 * `CFG_REF_CNT_PER_REV + `CFG_CNT_PER_REV / 2) / `CFG_CNT_PER_REV)    // 0.4
-`define CFG_POS_KD_Q16    ((262144 * `CFG_REF_CNT_PER_REV * 5 + `CFG_CNT_PER_REV) / (2 * `CFG_CNT_PER_REV))   // 4.0 ×2.5（微分项基准 50ms -> 20ms）
-`define CFG_POS_KI_Q16    ((6554 * `CFG_REF_CNT_PER_REV * 2 + `CFG_CNT_PER_REV) / (5 * `CFG_CNT_PER_REV))     // 0.1 ÷2.5（积分项基准 50ms -> 20ms；代码保留，I_MAX=0 已关闭）
+`define CFG_POS_KD_Q16    ((262144 * `CFG_REF_CNT_PER_REV + `CFG_CNT_PER_REV / 2) / `CFG_CNT_PER_REV)   // 4.0
+`define CFG_POS_KI_Q16    ((6554 * `CFG_REF_CNT_PER_REV + `CFG_CNT_PER_REV / 2) / `CFG_CNT_PER_REV)     // 0.1（代码保留，I_MAX=0 已关闭）
 `define CFG_POS_DEADZONE  ((`CFG_CNT_PER_REV + `CFG_REF_CNT_PER_REV / 2) / `CFG_REF_CNT_PER_REV)        // 输出死区，按同一噪声 count 数折算
 
 // --- OLED 显示（oled_ssd1306.v）---

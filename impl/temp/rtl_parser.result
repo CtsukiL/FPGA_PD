@@ -73,7 +73,7 @@
     "SubInsts" : [
      {
       "InstFile" : "E:/FPGA_PD/src/ctrl_fsm.v",
-      "InstLine" : 474,
+      "InstLine" : 468,
       "InstName" : "u_pid_angle",
       "ModuleFile" : "E:/FPGA_PD/src/pid_angle.v",
       "ModuleLine" : 14,
@@ -81,7 +81,7 @@
      },
      {
       "InstFile" : "E:/FPGA_PD/src/ctrl_fsm.v",
-      "InstLine" : 484,
+      "InstLine" : 478,
       "InstName" : "u_pid_pos",
       "ModuleFile" : "E:/FPGA_PD/src/pid_pos.v",
       "ModuleLine" : 17,

@@ -5,7 +5,7 @@
 //   状态 1            判断：每 40ms 采样角度，攒 3 点，判左/右极值 + 判入区
 //   状态 21/22/23/24  左推 +START_PWM 持续 100ms，再右推 -START_PWM 持续 100ms，回到状态 1
 //   状态 31/32/33/34  对称的反方向
-//   状态 4            PID 控制：角度环 5ms、位置环 20ms，角度超出 C±R 自动回 0
+//   状态 4            PID 控制：角度环 5ms、位置环 50ms，角度超出 C±R 自动回 0
 // 耦合关系（唯一一行）：角度环目标 = CENTER_ANGLE - 位置环输出 - 摩擦前馈 pos_ff
 //   （pos_ff 是 2026-10-04 加的：运动时给一个方向上的固定工作点偏置，治匀速粘滑顿挫）
 // 【2026-10-04 新增】梯形速度曲线轨迹发生器（赛题拓展 2，参数见下面参数区）：
@@ -14,7 +14,7 @@
 //   （赛题拓展 1"平滑移动到指定位置并保持静止"、拓展 3"移动中摆杆始终直立"同时受益。）
 //   这一点与 STM32 版不同（STM32 是 K2/K3 直接阶跃写 Target），是有意为赛题加的。
 //   操作：K2/K3 **短按** = 目标 ±360 度（走一遍梯形速度曲线）；**长按** = 手动点动
-//         慢移（按住有效、松手即停，速度 JOG_STEP/20ms）。
+//         慢移（按住有效、松手即停，速度 JOG_STEP/50ms）。
 // 与 STM32 版的两处有意差异：
 //   1) 本文把 (2) 版缺失的"三点角度缓冲区清零"补上（状态 24/34 回状态 1 时清 a0/a1/a2），
 //      这正是外层主线已定位并修掉的"第二次起摆就猛动掉下来"的根因。
@@ -29,7 +29,7 @@ module ctrl_fsm(
     input  wire               tick_1ms,
     input  wire               tick_5ms,
     input  wire               tick_40ms,
-    input  wire               tick_20ms,
+    input  wire               tick_50ms,
 
     input  wire [11:0]        angle,          // 实测角度（12bit）
     input  wire signed [31:0] location,       // 实测位置（编码器 count）
@@ -48,7 +48,7 @@ module ctrl_fsm(
     output reg  [11:0]        center_angle,   // 平衡点角度值（可在线标定）
     output wire signed [31:0] pos_target,     // 位置环目标 = 轨迹发生器输出 pos_cmd（2026-10-04 前是 K2/K3 直接阶跃）
     output wire signed [31:0] pos_set_out,    // 目标位置 pos_set（给 OLED 显示）
-    output reg  signed [31:0] bar_vel,        // 横杆速度（count/s，40ms 窗口差分 ×25，给 OLED 显示）
+    output reg  signed [31:0] bar_vel,        // 横杆速度（count/s，50ms 差分 ×20，给 OLED 显示）
     output wire signed [31:0] target_vel,     // ???? count/s??????????? 0?
     output wire               mov_active,     // 【2026-10-04】1 = 走轨迹/点动（给 motor_pwm 选死区档）
     output reg                enc_zero        // 位置零点清零脉冲 -> encoder_if
@@ -75,20 +75,20 @@ module ctrl_fsm(
     //   按"加速 -> 匀速(够长才有) -> 减速"把 pos_cmd 推到 pos_set，位置环只跟随 pos_cmd。
     //   赛题拓展 1 "平滑地移动到指定方向并保持静止" 与拓展 3 "移动中摆杆始终直立"
     //   也随之改善：横杆是被"带着走"而不是被位置环猛追，摆杆倾角小。
-    //   单位：vel 是 count/20ms，故 1 count/20ms = 50 count/s。
+    //   单位：vel 是 count/50ms，故 1 count/50ms = 20 count/s。
     //   最高速 = CFG_TRAJ_VMAX、加速度 = CFG_TRAJ_ASTEP / TRAJ_ACC_DIV，
     //   两者都在 pendulum_cfg.vh 里按 count/圈 折算，物理量不随换电机变化：
     //   141 度/s（约 0.4 圈/s）、约 8.8 度/s^2，走完一圈约 3.25s。
-    localparam signed [31:0] TRAJ_VMAX  = `CFG_TRAJ_VMAX;   // 最大速度（count/20ms）≙ 141 度/s
-    localparam signed [31:0] TRAJ_ASTEP = `CFG_TRAJ_ASTEP;  // 每档速度增量（count/20ms）
+    localparam signed [31:0] TRAJ_VMAX  = `CFG_TRAJ_VMAX;   // 最大速度（count/50ms）≙ 141 度/s
+    localparam signed [31:0] TRAJ_ASTEP = `CFG_TRAJ_ASTEP;  // 每档速度增量（count/50ms）
     // 【2026-10-04】加速度分频（速度每 TRAJ_ACC_DIV 拍才变一档）。
     //   曾设 2 把加速度减半试"起步太急"，但那是误判 —— 用户实测"不是速度问题"，
     //   真正的毛病是横杆运动本身不连续（见文件末"运动不连续"注释），所以调回 1。【2026-10-06 又设 2：K2/K3 短按"经常冲过头"—— 减速只有 400ms/36 count，比位置环能跟的更快，横杆一路落后、到站才猛追而冲过；加减速各减半后跟得上（一圈 2.9->3.25s）】
     //   想改加速度直接改这个数，减速距离会跟着算（见 t_dec_dist）。
-    localparam integer       TRAJ_ACC_DIV = 12;     // 【2026-10-10 节拍 50->20ms】2 -> 12：保持同样的加速度（≈417 count/s^2）与减速距离
+    localparam integer       TRAJ_ACC_DIV = 2;      // 【2026-10-06】1 -> 2：短按冲过头，加减速各减半
 
     //----------------- 长按点动参数（2026-10-04）-----------------
-    // K2/K3 按住不放时，目标以 JOG_STEP 每 20ms 的速度恒定缓慢推移（松手立即停），
+    // K2/K3 按住不放时，目标以 JOG_STEP 每 50ms 的速度恒定缓慢推移（松手立即停），
     // 用来手动把横杆"挪"到想要的位置演示（不走梯形曲线，就是匀速慢移）。
     //   当前约 70.6 度/s（走 1 圈约 5s）。2026-10-04 由半速提上来（用户嫌慢）。
     //   注：点动速度提高还有个附带好处 —— 位置误差累积更快、更快越过"推动阈值"，
@@ -112,10 +112,9 @@ module ctrl_fsm(
     // 轨迹发生器状态（2026-10-04，赛题拓展 2）
     reg signed [31:0] pos_set;      // K2/K3 设定的目标位置（count，阶跃）
     reg signed [31:0] pos_cmd;      // 轨迹发生器输出（count）= 位置环的 target
-    reg signed [31:0] traj_vel;     // 当前轨迹速度（count/20ms）
-    reg signed [31:0] loc_prev;     // 上一个 20ms 的横杆位置（算速度给 OLED 显示）
-    reg signed [31:0] loc_prev2;    // 上上个 20ms 的位置（bar_vel 用 40ms 窗口差分）
-    reg [3:0]         acc_ph;       // 加速度分频相位（每 TRAJ_ACC_DIV 个 20ms 才让速度变一档）
+    reg signed [31:0] traj_vel;     // 当前轨迹速度（count/50ms）
+    reg signed [31:0] loc_prev;     // 上一个 50ms 的横杆位置（算速度给 OLED 显示）
+    reg [3:0]         acc_ph;       // 加速度分频相位（每 TRAJ_ACC_DIV 个 50ms 才让速度变一档）
 
     reg        ang_calc, pos_calc;  // 两环计算脉冲
     reg        ang_clr, pos_clr;    // 两环清零/刷新脉冲
@@ -257,7 +256,6 @@ module ctrl_fsm(
             pos_cmd      <= 32'sd0;
             traj_vel     <= 32'sd0;
             loc_prev     <= 32'sd0;
-            loc_prev2    <= 32'sd0;
             bar_vel      <= 32'sd0;
             acc_ph       <= 4'd0;
             enc_zero     <= 1'b0;
@@ -269,22 +267,18 @@ module ctrl_fsm(
             pos_clr  <= 1'b0;
             enc_zero <= 1'b0;
 
-            // 横杆位置采样（20ms 一拍；bar_vel 用 2 拍 = 40ms 窗口差分 ×25）
-            //   【2026-10-10 节拍 50 -> 20ms】若直接用 20ms 差分，量化步长会从 20 变
-            //   50 count/s、曲线台阶反而更大；取 40ms 窗口后仍是 25 count/s 量级。
-            if (tick_20ms) begin
-                loc_prev2 <= loc_prev;
-                loc_prev  <= location;
-                bar_vel   <= (location - loc_prev2) * 32'sd25;
+            // 横杆位置采样（50ms 一拍，bar_vel 用它做差分）
+            if (tick_50ms) begin
+                loc_prev <= location;
+                bar_vel  <= (location - loc_prev) * 32'sd20;
             end
             // ???????????????????????
             if (enc_zero) begin
-                loc_prev2 <= 32'sd0;
-                loc_prev  <= 32'sd0;
-                bar_vel   <= 32'sd0;
+                loc_prev <= 32'sd0;
+                bar_vel  <= 32'sd0;
             end
             // 加速度分频相位：每 TRAJ_ACC_DIV 拍才让 traj_vel 变一档（见参数区说明）
-            if (tick_20ms) acc_ph <= (acc_ph == TRAJ_ACC_DIV[3:0] - 4'd1) ? 4'd0 : acc_ph + 4'd1;
+            if (tick_50ms) acc_ph <= (acc_ph == TRAJ_ACC_DIV[3:0] - 4'd1) ? 4'd0 : acc_ph + 4'd1;
 
             //---------- K2 / K3：设定目标位置（±90 度 = ±102 count）----------
             // 【2026-10-04】改的是 pos_set（目标的"目的地"），不再直接写位置环的 target；
@@ -424,8 +418,8 @@ module ctrl_fsm(
                             ang_calc  <= 1'b1;
                             motor_cmd <= ang_out_w;
                         end
-                        // 位置环 20ms【2026-10-10 由 20ms 改：与 20ms 遥测帧对齐】
-                        if (tick_20ms) begin
+                        // 位置环 50ms
+                        if (tick_50ms) begin
                             pos_calc <= 1'b1;
 
                             //------- 长按点动优先（2026-10-04）-------
@@ -444,7 +438,7 @@ module ctrl_fsm(
                             end else begin
                                 //------- 梯形速度曲线轨迹发生器（2026-10-04，赛题拓展 2）-------
                                 // 具体算式在下面的组合区（vel_nxt / cmd_nxt），这里只落寄存器：
-                                //   vel_nxt：每 20ms 朝目标方向加/减一档 TRAJ_ASTEP（限 TRAJ_VMAX），
+                                //   vel_nxt：每 50ms 朝目标方向加/减一档 TRAJ_ASTEP（限 TRAJ_VMAX），
                                 //            一旦"剩余距离 <= 从当前速度减速到 0 所需的距离"就转为减速
                                 //   cmd_nxt：pos_cmd 按当前速度推进，并用 pos_set 夹住（不会过冲）
                                 traj_vel <= vel_nxt;
@@ -497,7 +491,7 @@ module ctrl_fsm(
     assign pos_out     = pos_out_w;
     // 位置环的目标 = 轨迹发生器输出（2026-10-04 起；此前是 K2/K3 直接阶跃写 pos_target）
     assign pos_target  = pos_cmd;
-    // 给 OLED 显示用：目标位置 / 横杆速度（40ms 窗口差分 ×25 = count/s）
+    // 给 OLED 显示用：目标位置 / 横杆速度（50ms 位置差分 ×20 = count/s）
     assign pos_set_out = pos_set;
     assign target_vel  = (run_state != S_PID) ? 32'sd0 :
                          ev_jog_plus  ? JOG_STEP * 32'sd20 :

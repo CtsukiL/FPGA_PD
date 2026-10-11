@@ -3,7 +3,7 @@
 // 对应 STM32 版：江协 OLED 驱动 + main.c 的显示内容
 // 【当前版本 = 四行演示显示】（2026-10-04 改成演示用四项）：
 //   page0  CNT xxxx  ST xx       归一化后的 10bit 码(angle>>2) / 状态机状态
-//   page2  L ±xxxx  V ±xxxx      横杆位置（编码器 count）/ 横杆速度（count/s，40ms 窗口差分）
+//   page2  L ±xxxx  V ±xxxx      横杆位置（编码器 count）/ 横杆速度（count/s，50ms 位置差分）
 //   page4  DEG ±xxxx  POS ±xxxx  横杆实际位移换算的轮子转角(整数度，不回绕) / 目标位置(count)
 //   page6  ANG xxx.x  CT xxxx    传感器绝对角度 0.0~333.3 度 / 当前平衡点
 //   旧版四行（VIN/IN、CNT/ANG、RAW/AVG、ST/CT/L）见 oled_ssd1306.v.bak24

@@ -1,5 +1,5 @@
 //============================================================================
-// pid_pos.v —— 外环位置环（20ms）
+// pid_pos.v —— 外环位置环（50ms）
 // 对应 STM32 版 (2) 工程 main.c 的 LocationPID（走 PID.c 的 PID_Update）：
 //   Kp = 0.4, Kd = 4，输出限幅 ±40【2026-10-06 由 ±100 收到 ±40：治运动结束后来回晃】
 //   【2026-10-06】加回积分（KI 0.10 / I_MAX 48 / 泄漏 1/32，只在运动态参与）：
@@ -17,7 +17,7 @@
 module pid_pos(
     input  wire               clk,          // 50MHz 系统时钟
     input  wire               rst_n,        // 低电平复位
-    input  wire               calc_en,      // 20ms 计算脉冲
+    input  wire               calc_en,      // 50ms 计算脉冲
     input  wire signed [31:0] target,       // 位置目标（count，1 圈 = CFG_CNT_PER_REV，见 pendulum_cfg.vh）
     input  wire signed [31:0] location,     // 实测位置（count）
     input  wire               clr,          // 刷新（起摆入区：把上次误差置为当前误差，D 项首拍为 0）
@@ -45,16 +45,7 @@ module pid_pos(
     //----------------- 误差计算 ----------------
     wire signed [31:0] err   = target - location;
     reg  signed [31:0] err1;
-    // D 项（速度项）：用 1 拍（20ms）差分，**不加平均窗口**。
-    // 【2026-10-11】节拍 50 -> 20ms 后 KD ×2.5 保住了阻尼，但位置量化噪声（±1 count）
-    //   不随采样率缩小，会被 KD 放大成 ±4.35 count 的角度目标偏置、穿透输出死区(2)，
-    //   所以给 d_err 加 ±3 count 的门限，把纯量化噪声截掉
-    //   （单次抖动 ±1 count 时，两拍之差可达 ±2，门限必须 ≥ 3 才截得干净）。
-    //   注意：先试过"2 拍平均 + 门限"——静止确实安静了，但多出来的 20ms 延迟让
-    //   **运动中和被手推时**的阻尼跟不上（摆杆晃幅反而变大），所以改成不加窗口、
-    //   只用门限（门限不引入延迟）。
-    wire signed [31:0] d_err_raw = err - err1;          // 1 拍差分，无额外延迟
-    wire signed [31:0] d_err = (d_err_raw > -32'sd3 && d_err_raw < 32'sd3) ? 32'sd0 : d_err_raw;
+    wire signed [31:0] d_err = err - err1;      // 50ms 内的位置变化
 
     // 积分：累加 -> 限幅 -> 弱泄漏（对绝对值做泄漏，保证正负对称）
     // 【2026-10-06】抗饱和（条件积分）：已经顶到限幅、且误差还在同方向推时，本拍不再累加。
@@ -82,7 +73,7 @@ module pid_pos(
     // 再过输出死区
     wire signed [39:0] o_dz  = (o_lim > -DEADZONE && o_lim < DEADZONE) ? 40'sd0 : o_lim;
 
-    //----------------- 每 20ms 更新一次 ----------------
+    //----------------- 每 50ms 更新一次 ----------------
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             err1    <= 32'sd0;

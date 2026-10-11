@@ -6,7 +6,7 @@
 // 【仿真加速】
 //   clk_tick 与 adc_if 的 DIV 都设成 50：
 //     1ms 物理时间 = 1000 个 50MHz 周期 = 20us 仿真时间
-//   两个模块必须用同一个 DIV，否则"角度更新率(3ms)"与"控制节拍(5ms/20ms)"
+//   两个模块必须用同一个 DIV，否则"角度更新率(3ms)"与"控制节拍(5ms/50ms)"
 //   在仿真时间轴上的比例会错，物理时间轴仍然是真实的 ms。
 //
 // 【虚拟模型】
@@ -100,7 +100,7 @@ module tb_top;
     //----------------- 内部观察信号 ----------------
     wire [5:0]         run_state  = u_top.run_state;
     wire               tick_1ms   = u_top.tick_1ms;
-    wire               tick_20ms  = u_top.tick_20ms;
+    wire               tick_50ms  = u_top.tick_50ms;
     wire signed [15:0] motor_cmd  = u_top.motor_cmd;
     wire signed [15:0] angle_out  = u_top.angle_out;
     wire signed [15:0] pos_out    = u_top.pos_out;
@@ -238,7 +238,7 @@ module tb_top;
         end
     end
 
-    always @(posedge tick_20ms) begin
+    always @(posedge tick_50ms) begin
         $display("[%5d ms] st=%2d ang=%4d ctr=%4d loc=%7d pOut=%4d aOut=%4d cmd=%4d | a=%8.2f deg  th=%7.3f rad",
                  phys_ms, run_state, angle_dut, center_dut, location,
                  pos_out, angle_out, motor_cmd, alpha * RAD2DEG, theta);

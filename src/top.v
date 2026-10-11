@@ -2,7 +2,7 @@
 // top.v —— 顶层（逻辑派 FPGA-G1，GW2A-LV18PG256C8/I7，50MHz）
 // 对应 STM32 版：main.c 的 main()（模块初始化 + 主循环）
 // 模块划分与 STM32 版一一对应：
-//   clk_tick   <- Timer.c（1ms 中断）+ main.c 的计次分频（5ms/20ms/40ms）
+//   clk_tick   <- Timer.c（1ms 中断）+ main.c 的计次分频（5ms/40ms/50ms）
 //   adc_if     <- AD.c（ADC1_IN8，0~4095）+ 4 点滑动平均
 //   encoder_if <- Encoder.c（TIM3 编码器模式）+ Location 累加
 //   key_ctrl   <- Key.c（20ms 扫描）+ main.c 的 K1~K4 功能
@@ -47,7 +47,7 @@ module top(
     wire rst_n = rst_cnt[15];
 
     //----------------- 节拍 ----------------
-    wire tick_1ms, tick_5ms, tick_40ms, tick_20ms;   // 【2026-10-10】原 tick_50ms：位置环节拍 50 -> 20ms，与 20ms 遥测帧对齐
+    wire tick_1ms, tick_5ms, tick_40ms, tick_50ms;
 
     clk_tick u_clk_tick(
         .clk       (sys_clk),
@@ -55,7 +55,7 @@ module top(
         .tick_1ms  (tick_1ms),
         .tick_5ms  (tick_5ms),
         .tick_40ms (tick_40ms),
-        .tick_20ms (tick_20ms)
+        .tick_50ms (tick_50ms)
     );
 
     //----------------- 角度采集（3PA1030 并行 ADC）-----------------
@@ -158,7 +158,7 @@ module top(
         .tick_1ms      (tick_1ms),
         .tick_5ms      (tick_5ms),
         .tick_40ms     (tick_40ms),
-        .tick_20ms     (tick_20ms),
+        .tick_50ms     (tick_50ms),
         .angle         (angle),
         .location      (location),
         .ev_start_stop (k_start),       // K1：启停
