@@ -1,5 +1,5 @@
 //============================================================================
-// uart_dbg.v - UART telemetry (115200 8N1, 49-byte frame every 20ms).
+// uart_dbg.v - UART telemetry (115200 8N1, 49-byte frame every 50ms).
 // 对应 STM32 版：Serial.c（原程序未使用）。FPGA 上没有 Keil Watch，
 // 所以把关键量定时上报，便于调参和排障。
 //   波特率 115200（50MHz / 115200 ≈ 434）
@@ -15,7 +15,7 @@
 // 用 doc\uart_parse.py 可直接解析成 CSV。
 //============================================================================
 module uart_dbg #(
-    parameter integer FRAME_MS = 20
+    parameter integer FRAME_MS = 50
 )(
     input  wire               clk,          // 50MHz 系统时钟
     input  wire               rst_n,        // 低电平复位

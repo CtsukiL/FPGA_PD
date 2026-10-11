@@ -15,7 +15,7 @@
     <div class="brand"><div class="mark" aria-hidden="true"></div><div><h1>FPGA Pendulum Telemetry</h1><p>实时观察位置轨迹、速度跟踪与双环控制输出</p></div></div>
     <div class="actions"><span class="status"><i class="dot" id="dot"></i><span id="status">未连接</span></span><button class="primary" id="connect">连接串口</button><button id="pause" disabled>暂停</button><button id="clear" disabled>清空</button><button id="save" disabled>导出 CSV</button></div>
   </header>
-  <section class="toolbar"><label for="window">显示窗口</label><input id="window" type="number" min="20" max="2000" value="300"><span class="pill">49 字节遥测帧 · 20 ms</span><span class="notice">请使用 Chrome 或 Edge，并用 USB-TTL 的 3.3V 电平连接 FPGA TX。</span></section>
+  <section class="toolbar"><label for="window">显示窗口</label><input id="window" type="number" min="20" max="2000" value="300"><span class="pill">49 字节遥测帧 · 50 ms</span><span class="notice">请使用 Chrome 或 Edge，并用 USB-TTL 的 3.3V 电平连接 FPGA TX。</span></section>
   <section class="metrics">
     <div class="metric"><div class="label">运行状态</div><div class="value"><span id="state">--</span></div></div>
     <div class="metric"><div class="label">角度</div><div class="value"><span id="angle">--</span><span class="unit">code</span></div></div>

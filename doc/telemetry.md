@@ -1,8 +1,8 @@
 # UART telemetry
 
-The FPGA sends a 49-byte little-endian frame every 20 ms at 115200 8N1. The UART frame transmitter has a `FRAME_MS` parameter. This is independent of the control loop periods: the position loop and measured speed remain 50 ms, while the angle loop and motor command remain 5 ms.
+The FPGA sends a 49-byte little-endian frame every 50 ms at 115200 8N1. The UART frame transmitter has a `FRAME_MS` parameter. This is independent of the control loop periods: the position loop and measured speed remain 50 ms, while the angle loop and motor command remain 5 ms.
 
-At 115200 8N1, one 49-byte frame takes about 4.25 ms on the wire. The 20 ms setting uses about 21.3% of the link and leaves ample idle time. Data sent while the browser is disconnected cannot be recovered because the FPGA transmitter has no receive-side queue; the sequence and CRC fields let the viewer detect such gaps.
+At 115200 8N1, one 49-byte frame takes about 4.25 ms on the wire. The 50 ms setting uses about 8.5% of the link and leaves ample idle time. Data sent while the browser is disconnected cannot be recovered because the FPGA transmitter has no receive-side queue; the sequence and CRC fields let the viewer detect such gaps.
 
 | Bytes | Field |
 |---|---|
