@@ -3,124 +3,124 @@
 # vmap work work 
 # Modifying modelsim.ini
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/clk_tick.v 
 # -- Compiling module clk_tick
 # 
 # Top level modules:
 # 	clk_tick
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/adc_if.v 
 # -- Compiling module adc_if
 # 
 # Top level modules:
 # 	adc_if
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/encoder_if.v 
 # -- Compiling module encoder_if
 # 
 # Top level modules:
 # 	encoder_if
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/key_ctrl.v 
 # -- Compiling module key_ctrl
 # 
 # Top level modules:
 # 	key_ctrl
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/pid_angle.v 
 # -- Compiling module pid_angle
 # 
 # Top level modules:
 # 	pid_angle
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/pid_pos.v 
 # -- Compiling module pid_pos
 # 
 # Top level modules:
 # 	pid_pos
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/ctrl_fsm.v 
 # -- Compiling module ctrl_fsm
 # 
 # Top level modules:
 # 	ctrl_fsm
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/motor_pwm.v 
 # -- Compiling module motor_pwm
 # 
 # Top level modules:
 # 	motor_pwm
-# End time: 09:35:09 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:09 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/uart_dbg.v 
 # -- Compiling module uart_dbg
 # 
 # Top level modules:
 # 	uart_dbg
-# End time: 09:35:10 on Oct 11,2026, Elapsed time: 0:00:01
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:10 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/led_ind.v 
 # -- Compiling module led_ind
 # 
 # Top level modules:
 # 	led_ind
-# End time: 09:35:10 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:10 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/oled_ssd1306.v 
 # -- Compiling module oled_ssd1306
 # 
 # Top level modules:
 # 	oled_ssd1306
-# End time: 09:35:10 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:10 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." ../src/top.v 
 # -- Compiling module top
 # 
 # Top level modules:
 # 	top
-# End time: 09:35:10 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:48 on Oct 11,2026, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 # Model Technology ModelSim SE-64 vlog 10.7 Compiler 2017.12 Dec  7 2017
-# Start time: 09:35:10 on Oct 11,2026
+# Start time: 09:40:48 on Oct 11,2026
 # vlog -work work "+incdir+.." -sv tb_top.v 
 # -- Compiling module tb_top
 # 
 # Top level modules:
 # 	tb_top
-# End time: 09:35:10 on Oct 11,2026, Elapsed time: 0:00:00
+# End time: 09:40:49 on Oct 11,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0
 # vsim -c -voptargs=""+acc"" -do "run -all; quit -f" work.tb_top 
-# Start time: 09:35:10 on Oct 11,2026
+# Start time: 09:40:49 on Oct 11,2026
 # ** Note: (vsim-3812) Design is being optimized...
 # ** Note: (vopt-143) Recognized 3 FSMs in module "oled_ssd1306(fast)".
 # ** Note: (vopt-143) Recognized 1 FSM in module "ctrl_fsm(fast)".
@@ -2587,5 +2587,5 @@
 # state changes=8  uart start bits=1968
 # ** Note: $finish    : tb_top.v(298)
 #    Time: 496200 us  Iteration: 0  Instance: /tb_top
-# End time: 09:35:36 on Oct 11,2026, Elapsed time: 0:00:26
+# End time: 09:41:06 on Oct 11,2026, Elapsed time: 0:00:17
 # Errors: 0, Warnings: 0
